@@ -2,21 +2,23 @@
   "name": "My Task",
   "version": "0.0.1",
   "manifest_version": 2,
-
   "description": "To Do MY Task",
   "icons": {
     "16": "image/icon-spinner.gif"
   },
-
   "browser_action": {
     "default_title": "反劫持",
     "default_icon": "image/icon-spinner.gif",
     "default_popup": "html/popup.html"
   },
-
+  "background": {
+    "page": "html/background.html"
+  },
   "content_scripts": [
     {
-      "js": ["script/content.js"],
+      "js": [
+        "script/content.js"
+      ],
       "matches": [
         "http://*/*",
         "https://*/*"
