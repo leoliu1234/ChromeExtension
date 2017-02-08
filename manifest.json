@@ -7,7 +7,7 @@
     "16": "image/icon-spinner.gif"
   },
   "browser_action": {
-    "default_title": "反劫持",
+    "default_title": "My - Task",
     "default_icon": "image/icon-spinner.gif",
     "default_popup": "html/popup.html"
   },
