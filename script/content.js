@@ -1,12 +1,7 @@
 window.onload = function () {
     printLog();
     chrome.extension.sendRequest({ url: location.host }, function (data) {
-        if (data.type == 1) {
-            taskGeekSignIn(data);
-        } else if (data.type === 2) {
-            xiaoMiLogin(data);
-        }
-        else {
+        if (data.type !== 2) {
             taskSignIn(data);
         }
     });
@@ -18,20 +13,11 @@ function printLog() {
 }
 
 function xiaoMiLogin(data) {
-    document.querySelector("#username").value = data.username;
-    document.querySelector("#pwd").value = data.password;
-    document.querySelector("#login-button").click();
-}
-
-function taskGeekSignIn(data) {
-    window.open(data.applyUrl);
     setTimeout(function () {
-        window.open("http://geek.miui.com/index.php?m=member&c=index&a=logout");
-
-        setTimeout(function () {
-            window.open("https://account.xiaomi.com/pass/serviceLogin?callback=http%3A%2F%2Fwww.miui.com%2Fextra.php%3Fmod%3Dxiaomi%2Fauthcallback%26comefrom%3Dgeek%26followup%3Dhttp%253A%252F%252Fgeek.miui.com%252F%26sign%3DYWM5NTNjMjQyYTkyOWFmZDc2Y2M5ZDQwNWQ3ZjA3MjE3ZDM1NzQzNQ%2C%2C&sid=miuibbs&_locale=zh_CN");
-        }, 5 * 1000);
-    }, 10 * 1000);
+        document.querySelector("#username").value = data.username;
+        document.querySelector("#pwd").value = data.password;
+        document.querySelector("#login-button").click();
+    }, 5 * 1000);
 }
 
 function taskSignIn() {
