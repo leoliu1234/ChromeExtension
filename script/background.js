@@ -18,7 +18,7 @@ function xiaoMiLogin() {
 
 setInterval(function () {
     var date = new Date();
-    if (geekSignInDate != date.getDate() && date.getHours() > 6) {
+    if (geekSignInDate != date.getDate() && date.getHours() > 5) {
         geekSignInDate = date.getDate();
         tabCreate({ url: 'http://www.miui.com/home.php?mod=task&do=apply&id=21' }, function (tab) {
             tabUpdate(tab.id, { url: 'http://geek.miui.com/index.php?m=member&c=index&a=logout' }, function (tab) {
@@ -36,11 +36,30 @@ setInterval(function () {
     }
 }, 1000 * 60 * 10);
 
+var jdTask = [
+    { url: 'http://vip.jd.com/', code: "var element = document.querySelector('#checkinBtn'); if(element) { element.click(); }" },
+    { url: 'http://vip.jr.jd.com/', code: "var element = document.querySelector('#index-qian-btn');if(element) { element.click(); }" },
+    { url: 'http://you.jd.com/', code: "var element = document.querySelector('#sidebar_checkin_btn');if(element) { element.click(); }" }
+];
+var jd;
+
+setInterval(function () {
+    var date = new Date();
+    if (jd != date.getDate() && date.getHours() > 5) {
+        jd = date.getDate();
+        for (var i = 0; i < jdTask.length; i++) {
+            singleActionTask(jdTask[i].url, jdTask[i].code);
+        }
+    }
+}, 1000 * 60 * 10);
+
+
+// Utility
 function tabCreate(option, callback) {
     chrome.tabs.create(option, function (tab) {
         setTimeout(function () {
             callback(tab);
-        }, 5 * 1000);
+        }, 30 * 1000);
     });
 };
 
@@ -48,7 +67,7 @@ function tabUpdate(tabId, option, callback) {
     chrome.tabs.update(tabId, option, function (tab) {
         setTimeout(function () {
             callback(tab);
-        }, 5 * 1000);
+        }, 30 * 1000);
     });
 };
 
@@ -56,36 +75,15 @@ function executeScript(tabId, option, callback) {
     chrome.tabs.executeScript(tabId, option, function (tab) {
         setTimeout(function () {
             callback(tab);
-        }, 5 * 1000);
+        }, 30 * 1000);
     });
 };
-//home.php?mod=task&do=draw&id=21
-///http://www.miui.com/home.php?mod=task&do=apply&id=21
-//1 reload, 2 click
 
-// {
-//     actionType:1,
-//     startTime: 0,
-//     endTime:1,
-//     repeat: 1*60*1000,
-//     pageName: 'test'
-// }
-
-// {
-//     actionType:2,
-//     startTime: 0,
-//     endTime:1,
-//     repeat: 1*60*1000,
-//     pageName: 'test',
-//     element:'#test'
-// }
-
-/*
-type:
-    0  -----> other task
-    1  -----> geek sign in
-    2  -----> xiaomi login
-
-*/
-
+function singleActionTask(url, code) {
+    tabCreate({ url: url }, function (tab) {
+        executeScript(tab.id, { code: code }, function () {
+            chrome.tabs.remove(tab.id, function () { });
+        });
+    });
+};
 
