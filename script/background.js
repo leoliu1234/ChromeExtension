@@ -4,16 +4,22 @@ chrome.extension.onRequest.addListener(function (request, sender, sendResponse) 
         sendResponse(miuiTask());
     } else if (request.url.indexOf("account.xiaomi.com") !== -1) {
         sendResponse(xiaoMiLogin());
+    } else if (request.url.indexOf("jd.com") !== -1) {
+        sendResponse(jdLogin());
     }
     var b = true;
 });
 
 function miuiTask() {
-    return { type: 0 };
+    return { type: 1 };
 }
 
 function xiaoMiLogin() {
     return { type: 2, username: '349419245', password: 'wfy12345678...' };
+}
+
+function jdLogin() {
+    return { type: 3 };
 }
 
 setInterval(function () {

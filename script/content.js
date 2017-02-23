@@ -1,8 +1,12 @@
 window.onload = function () {
     printLog();
     chrome.extension.sendRequest({ url: location.host }, function (data) {
-        if (data.type !== 2) {
+        if (data.type == 1) {
             taskSignIn(data);
+        } else if (data.type == 3) {
+            setInterval(function () {
+                location.reload();
+            }, 1000 * 60 * 5);
         }
     });
 };
