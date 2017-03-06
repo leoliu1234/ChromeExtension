@@ -6,7 +6,7 @@ window.onload = function () {
         } else if (data.type == 3) {
             setInterval(function () {
                 location.reload();
-            }, 1000 * 60 * 5);
+            }, 1000 * 60 * 2);
         }
     });
 };
@@ -16,21 +16,8 @@ function printLog() {
     console.log("leo:" + date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds());
 }
 
-function xiaoMiLogin(data) {
-    setTimeout(function () {
-        document.querySelector("#username").value = data.username;
-        document.querySelector("#pwd").value = data.password;
-        document.querySelector("#login-button").click();
-    }, 5 * 1000);
-}
-
 function taskSignIn() {
     setTimeout(function () {
-        var element = document.querySelector("#sign_area .pf_sign_link.link_no_cursor");
-        if (element) {
-            element.click();
-        }
-
         var number = Math.floor(Math.random() * 10);
         switch (number) {
             case 1:

@@ -2,42 +2,44 @@ var geekSignInDate = null;
 chrome.extension.onRequest.addListener(function (request, sender, sendResponse) {
     if (request.url.indexOf("miui.com") !== -1) {
         sendResponse(miuiTask());
-    } else if (request.url.indexOf("account.xiaomi.com") !== -1) {
-        sendResponse(xiaoMiLogin());
-    } else if (request.url.indexOf("jd.com") !== -1) {
-        sendResponse(jdLogin());
+    } else {
+        sendResponse(reload());
     }
-    var b = true;
 });
 
 function miuiTask() {
     return { type: 1 };
 }
 
-function xiaoMiLogin() {
-    return { type: 2, username: '349419245', password: 'wfy12345678...' };
-}
-
-function jdLogin() {
+function reload() {
     return { type: 3 };
 }
 
 setInterval(function () {
     var date = new Date();
-    if (geekSignInDate != date.getDate() && date.getHours() > 5) {
-        geekSignInDate = date.getDate();
+    if (geekSignInDate != date.getDate() && date.getHours() > 6) {
         tabCreate({ url: 'http://www.miui.com/home.php?mod=task&do=apply&id=21' }, function (tab) {
             tabUpdate(tab.id, { url: 'http://geek.miui.com/index.php?m=member&c=index&a=logout' }, function (tab) {
                 tabUpdate(tab.id, { url: 'https://account.xiaomi.com/pass/serviceLogin?callback=http%3A%2F%2Fwww.miui.com%2Fextra.php%3Fmod%3Dxiaomi%2Fauthcallback%26comefrom%3Dgeek%26followup%3Dhttp%253A%252F%252Fgeek.miui.com%252F%26sign%3DYWM5NTNjMjQyYTkyOWFmZDc2Y2M5ZDQwNWQ3ZjA3MjE3ZDM1NzQzNQ%2C%2C&sid=miuibbs&_locale=zh_CN' }, function (tab) {
-                    executeScript(tab.id, { file: '/script/contentscriptgeek.js' }, function () {
+                    executeScript(tab.id, { code: 'document.querySelector("#username").value = "349419245";document.querySelector("#pwd").value = "wfy12345678...";document.querySelector("#login-button").click();' }, function () {
                         tabUpdate(tab.id, { url: 'http://www.miui.com/home.php?mod=task&do=draw&id=21' }, function (tab) {
                             chrome.tabs.remove(tab.id, function () {
-
+                                geekSignInDate = date.getDate();
                             })
                         });
                     });
                 });
             });
+        });
+    }
+}, 1000 * 60 * 10);
+
+var xiaoMiSignIn;
+setInterval(function () {
+    var date = new Date();
+    if (xiaoMiSignIn != date.getDate() && date.getHours() > 5) {
+        singleActionTask("http://www.miui.com/index.html", 'var element = document.querySelector("#sign_area .pf_sign_link.link_no_cursor"); if (element) { element.click(); }', function () {
+            xiaoMiSignIn = date.getDate();
         });
     }
 }, 1000 * 60 * 10);
@@ -85,10 +87,14 @@ function executeScript(tabId, option, callback) {
     });
 };
 
-function singleActionTask(url, code) {
+function singleActionTask(url, code, doneCallBack) {
     tabCreate({ url: url }, function (tab) {
         executeScript(tab.id, { code: code }, function () {
-            chrome.tabs.remove(tab.id, function () { });
+            chrome.tabs.remove(tab.id, function () {
+                if (typeof doneCallBack === 'function') {
+                    doneCallBack();
+                }
+            });
         });
     });
 };
